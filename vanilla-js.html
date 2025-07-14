@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline data entry</title>
+</head>
+<body>
+    
+    <table id="Collar-table">
+        <h1>Collar</h1>
+        <thead>
+        <tr>
+            <th>HoleID</th>
+            <th>East NAD83 Z4</th>
+            <th>North NAD 83 Z4</th>
+            <th>RL</th>
+            <th>Collar Azim (Grid)</th>
+            <th>Collar Dip</th>
+            <th>Date Started</th>
+            <th>Date Finished</th>
+            <th>Drill Contractor</th>
+            <th>Drill Rig</th>
+            <th>Core Size(s)</th>
+            <th>Geologists</th>
+            <th>Collar Survey Method</th>
+            <th>Collar Survey Instrument</th>
+            <th>Comments</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+        <!-- the datalist element should likely be autogenerted -->
+        <datalist id="coreSizes"></datalist>
+        
+    </table>
+    <button onclick="addRow('Collar-table', collarCols)">+</button>
+    <button onclick="deleteRow('Collar-table', collarCols)">-</button>
+</body>
+<style>
+  input.invalid {
+    border: 2px solid #e00;
+    background: #fee;
+  }
+</style>
+<script>
+
+    //Collar
+    const collarCols=[
+        "HoleID",
+        "East NAD83 Z4",
+        "North NAD 83 Z4",
+        "RL",
+        "Collar Azim (Grid)",
+        "Collar Dip",
+        "Date Started",
+        "Date Finished",
+        "Drill Contractor",
+        "Drill Rig",
+        "Core Size(s)",
+        "Geologists",
+        "Collar Survey Method",
+        "Collar Survey Instrument",
+        "Comments"
+    ];
+
+    const dateFields=["Date Started", "Date Finished"];
+
+    const coreSizes = [
+        "HQ",
+        "NQ",
+        "NQ2",
+        "HQ NQ",
+        "HQ NQ2"];
+    // populate datalist
+    const coreSizesDL = document.getElementById("coreSizes");
+    coreSizes.forEach(option =>{
+        const opt = document.createElement('option');
+        opt.value=option;
+        coreSizesDL.appendChild(opt);
+    });
+    
+    //the data field is important for auto loading from file
+    function addRow(table_id, columns, data={}) {
+        table=document.getElementById(table_id).querySelector('tbody');
+        const row = document.createElement('tr');
+        columns.forEach(field => {
+            const td = document.createElement('td');
+            td.setAttribute("name",field);
+            
+            const input = document.createElement('input');
+            input.value=data[field] || '';
+            
+            //input.setAttribute("id",field);
+            input.setAttribute("name",field);
+
+            if (dateFields.includes(field)){
+                input.setAttribute("type",'date');
+                input.addEventListener('input', () => validateDates(row))
+            }
+
+            if (field === "Core Size(s)"){
+                input.setAttribute("list","coreSizes")//should get from original table creation so more reusable
+                input.id="coreSizes";
+            }
+            td.appendChild(input);
+            row.appendChild(td);
+        });
+        table.appendChild(row);
+    }
+    function deleteRow(table_id, columns, data={}) {
+        lastRow=document.getElementById(table_id).querySelector('tbody');
+        console.log(table.children[table.children.length-1]);
+        table.children[table.children.length-1].remove();
+    }
+    function validateDates(row){
+        
+        const inputs = Array.from(row.querySelectorAll('input'))
+            .filter( i => dateFields.includes(i.name));
+        const [startInput, finishInput] =[
+            inputs.find( i => i.name==="Date Started"),
+            inputs.find( i => i.name==="Date Finished")
+        ];
+
+        if (!startInput || ! finishInput){
+            startInput.classList.remove('invalid');
+            finishInput.classList.remove('invalid');
+            return;
+        }
+
+        const start = new Date(startInput.value);
+        const finish = new Date(finishInput.value);
+
+        if (start>finish){
+            startInput.classList.add('invalid');
+            finishInput.classList.add('invalid');
+        }else{
+            startInput.classList.remove('invalid');
+            finishInput.classList.remove('invalid');
+        }
+    }
+
+</script>
+</html>
