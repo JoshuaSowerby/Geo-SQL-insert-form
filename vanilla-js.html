@@ -30,7 +30,9 @@
         </thead>
         <tbody></tbody>
         <!-- the datalist element should likely be autogenerted -->
-        <datalist id="coreSizes"></datalist>
+        <datalist id="CoreSize(s)"></datalist>
+        <datalist id="CollarSurveyMethod"></datalist>
+        <datalist id="CollarSurveyInstrument"></datalist>
         
     </table>
     <button onclick="addRow('Collar-table', collarCols)">+</button>
@@ -63,22 +65,60 @@
         "Comments"
     ];
 
+    //I don't really like this var, see if you an change it
     const dateFields=["Date Started", "Date Finished"];
-
+    
+    const datalistColumns=[
+        "Core Size(s)",
+        "Collar Survey Method",
+        "Collar Survey Instrument",
+    ];
+    const generateDL = (id, options) =>{
+        if (!id || !options) return;
+        id = id.replace(/\s/g, "");
+        const dl=document.getElementById(id);
+        //
+        options.forEach( option =>{
+            const optTag=document.createElement('option');
+            optTag.value=option;
+            dl.appendChild(optTag);
+        });
+    }
+    // Core Size(s) datalist
     const coreSizes = [
         "HQ",
         "NQ",
         "NQ2",
         "HQ NQ",
         "HQ NQ2"];
-    // populate datalist
-    const coreSizesDL = document.getElementById("coreSizes");
-    coreSizes.forEach(option =>{
-        const opt = document.createElement('option');
-        opt.value=option;
-        coreSizesDL.appendChild(opt);
-    });
+    generateDL("Core Size(s)",coreSizes)
     
+    // Collar Survey Method
+    const collarSurveyMethod= [
+        "GPSDiff",
+        "GPSHand",
+        "INC/PRO",
+        "RTK",
+        "UK",
+        "Downhole"
+    ];
+    generateDL("Collar Survey Method",collarSurveyMethod)
+
+    // Collar Survey Instrument datalist
+    const collarSurveyInstrument=[
+        "Garmin 60CSx",
+        "Garmin 76",
+        "Garmin 76CSx",
+        "Leica GPS1200",
+        "Leica TPS1200",
+        "Leica TPS500",
+        "Leica TPS800",
+        "Trimble JunoST",
+        "Unknown"
+    ];
+    generateDL("Collar Survey Instrument",collarSurveyInstrument)
+
+
     //the data field is important for auto loading from file
     function addRow(table_id, columns, data={}) {
         table=document.getElementById(table_id).querySelector('tbody');
@@ -93,15 +133,19 @@
             //input.setAttribute("id",field);
             input.setAttribute("name",field);
 
+            //date validation
             if (dateFields.includes(field)){
                 input.setAttribute("type",'date');
-                input.addEventListener('input', () => validateDates(row))
+                input.addEventListener('input', () => validateDates(row));
             }
 
-            if (field === "Core Size(s)"){
-                input.setAttribute("list","coreSizes")//should get from original table creation so more reusable
-                input.id="coreSizes";
+            //reference datalist
+            if (datalistColumns.includes(field)){
+                var id = field.replace(/\s/g, "");
+                input.setAttribute("list",id)//should get from original table creation so more reusable
+                input.addEventListener('input', () => validateDL(input,id));
             }
+
             td.appendChild(input);
             row.appendChild(td);
         });
@@ -112,6 +156,18 @@
         console.log(table.children[table.children.length-1]);
         table.children[table.children.length-1].remove();
     }
+
+    function validateDL(input,datalistId){
+        var validDL = Array.from(document.getElementById(datalistId).querySelectorAll('option'))
+        validDL = validDL.map(item=>item.value)
+        console.log(validDL)
+        if (!validDL.includes(input.value)){
+            input.classList.add('invalid');
+        } else {
+            input.classList.remove('invalid');
+        }
+    }
+
     function validateDates(row){
         
         const inputs = Array.from(row.querySelectorAll('input'))
