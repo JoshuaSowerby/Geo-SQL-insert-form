@@ -14,7 +14,13 @@ export const addTable = (columns, id_prefix, addRowFunc, deleteRowFunc, datalist
 
 
     //Create table
-    const tableDiv= document.getElementById('tables');
+    const allTables= document.getElementById('tables');
+
+    const tableDiv= document.createElement('div');
+    tableDiv.setAttribute('id',`${id_prefix}_div`);
+
+    allTables.appendChild(tableDiv);
+
     const table = document.createElement('table');
     const table_id=`${id_prefix}_table`;
     table.setAttribute('id',table_id);
@@ -41,6 +47,7 @@ export const addTable = (columns, id_prefix, addRowFunc, deleteRowFunc, datalist
     //Add datalist here
     Object.keys(datalist).forEach( (key)=> {
         const dl = document.createElement("datalist");
+        tableDiv.appendChild(dl);
         const dl_id = key.replace(/\s/g, "");
         dl.setAttribute('id',dl_id)
         generateDL(key,datalist[key]);
