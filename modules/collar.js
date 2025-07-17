@@ -73,11 +73,6 @@ export function addRow(table_id, columns, data={}) {
     });
     table.appendChild(row);
 }
-export function deleteRow(table_id, columns=[], data={}) {
-    const table=document.getElementById(table_id).querySelector('tbody');
-    console.log(table.children[table.children.length-1]);
-    table.children[table.children.length-1].remove();
-}
 
 //would be better if this was more generic
 console.log("modules/collar.js function 'validateDates' could this be made to be generic?")
