@@ -1,5 +1,6 @@
 
 import { validateDL } from "./datalist.js";
+import { SurveyMethodOptions, SurveyInstrumentOptions } from "./common-dl-options.js";
 export const id_prefix="Collar";
 export const collarCols=[
         "HoleID",
@@ -26,25 +27,8 @@ export const datalist = {
         "NQ2",
         "HQ NQ",
         "HQ NQ2"],
-    "Collar Survey Method":[
-        "GPSDiff",
-        "GPSHand",
-        "INC/PRO",
-        "RTK",
-        "UK",
-        "Downhole"
-    ],
-    "Collar Survey Instrument":[
-        "Garmin 60CSx",
-        "Garmin 76",
-        "Garmin 76CSx",
-        "Leica GPS1200",
-        "Leica TPS1200",
-        "Leica TPS500",
-        "Leica TPS800",
-        "Trimble JunoST",
-        "Unknown"
-    ],
+    "Collar Survey Method":SurveyMethodOptions,
+    "Collar Survey Instrument":SurveyInstrumentOptions
 };
 
 const datalistColumns=Object.keys(datalist);
