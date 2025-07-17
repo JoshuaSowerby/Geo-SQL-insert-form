@@ -14,8 +14,8 @@ export const addTable = (columns, id_prefix, addRowFunc, deleteRowFunc, datalist
     tabButton.onclick= ()=>{
         //this should be defined as a variable not a string
         const tableDiv = document.getElementById(`${id_prefix}_div`)
-        if (tableDiv.style.visibility==="visible"){tableDiv.style.visibility="hidden";}
-        else {tableDiv.style.visibility="visible"};
+        if (tableDiv.style.display==="block"){tableDiv.style.display="none";}
+        else {tableDiv.style.display="block"};
     }
     tabButton.innerHTML=id_prefix;
     tabs_th.appendChild(tabButton);
@@ -27,7 +27,7 @@ export const addTable = (columns, id_prefix, addRowFunc, deleteRowFunc, datalist
 
     const tableDiv= document.createElement('div');
     tableDiv.setAttribute('id',`${id_prefix}_div`);
-    tableDiv.style.visibility = "hidden"//"visible|hidden|collapse|initial|inherit"
+    tableDiv.style.display="none";
 
     const title = document.createElement('h2');
     title.innerHTML=id_prefix;
